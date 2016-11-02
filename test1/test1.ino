@@ -1,3 +1,4 @@
+// Credit: https://wp.josh.com/2014/05/13/ws2812-neopixels-are-not-so-finicky-once-you-get-to-know-them/
 // These values depend on which pins your 8 strings are connected to and what board you are using 
 // More info on how to find these at http://www.arduino.cc/en/Reference/PortManipulation
 
