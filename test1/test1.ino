@@ -8,6 +8,7 @@
 // Note that you could also include the DigitalWriteFast header file to not need to to this lookup.
 
 #define PIXEL_PORT  PORTD  // Port of the pin the pixels are connected to
+#define PIXEL_PORT2  PORTC  // Port of the pin the pixels are connected to
 #define PIXEL_DDR   DDRD   // Port of the pin the pixels are connected to
 
 // These are the timing constraints taken mostly from the WS2812 datasheets 
@@ -41,29 +42,33 @@ static inline __attribute__ ((always_inline)) void sendBitX8( uint8_t bits ) {
             
     asm volatile (
       
-      "out %[port], %[onBits] \n\t"           // 1st step - send T0H high 
+      "out %[port1], %[onBits] \n\t"           // 1st step - send T0H high 
+      "out %[port2], %[onBits] \n\t"
       
       ".rept %[T0HCycles] \n\t"               // Execute NOPs to delay exactly the specified number of cycles
         "nop \n\t"
       ".endr \n\t"
       
-      "out %[port], %[bits] \n\t"             // set the output bits to thier values for T0H-T1H
+      "out %[port1], %[bits] \n\t"             // set the output bits to thier values for T0H-T1H
+      "out %[port2], %[bits] \n\t"
       ".rept %[dataCycles] \n\t"               // Execute NOPs to delay exactly the specified number of cycles
       "nop \n\t"
       ".endr \n\t"
       
-      "out %[port],__zero_reg__  \n\t"        // last step - T1L all bits low
-
+      "out %[port1],__zero_reg__  \n\t"        // last step - T1L all bits low
+      "out %[port2],__zero_reg__  \n\t"
+      
       // Don't need an explicit delay here since the overhead that follows will always be long enough
     
       ::
-      [port]    "I" (_SFR_IO_ADDR(PIXEL_PORT)),
+      [port1]    "I" (_SFR_IO_ADDR(PIXEL_PORT)),
+      [port2]    "I" (_SFR_IO_ADDR(PIXEL_PORT2)),
       [bits]   "d" (bits),
       [onBits]   "d" (onBits),
       
-      [T0HCycles]  "I" (NS_TO_CYCLES(T0H) - 2),           // 1-bit width less overhead  for the actual bit setting, note that this delay could be longer and everything would still work
+      [T0HCycles]  "I" (NS_TO_CYCLES(T0H) - 3),           // 1-bit width less overhead  for the actual bit setting, note that this delay could be longer and everything would still work
       
-      [dataCycles]   "I" (NS_TO_CYCLES((T1H-T0H)) - 2)     // Minimum interbit delay. Note that we probably don't need this at all since the loop overhead will be enough, but here for correctness
+      [dataCycles]   "I" (NS_TO_CYCLES((T1H-T0H)) - 3)     // Minimum interbit delay. Note that we probably don't need this at all since the loop overhead will be enough, but here for correctness
 
     );
                                   
