@@ -33,6 +33,8 @@
 
 #define NS_TO_CYCLES(n) ( (n) / NS_PER_CYCLE )
 
+const int STRING_LENGTH = 40;
+
 // Actually send the next set of 8 WS2812B encoded bits to the 8 pins.
 // We must to drop to asm to enusre that the complier does
 // not reorder things and make it so the delay happens in the wrong place.
@@ -82,9 +84,6 @@ static inline __attribute__ ((always_inline)) void sendBitX8( uint8_t bits ) {
 // Each string is one bit in "row" represening on or off
 
 static inline void __attribute__ ((always_inline)) sendWhiteRow( uint8_t row ) {
-
-  // Send the bit 24 times down every row. This is 100% white. Remember that each pixel is 24 bits wide (8 bits each for R,G, & B)
-  
   uint8_t bit=24;       
 
   while (bit--) {
@@ -93,9 +92,6 @@ static inline void __attribute__ ((always_inline)) sendWhiteRow( uint8_t row ) {
 }
     
 static inline void __attribute__ ((always_inline)) sendGreenRow( uint8_t row ) {
-
-  // Send the bit 24 times down every row. This is 100% white. Remember that each pixel is 24 bits wide (8 bits each for R,G, & B)
-  
   uint8_t bit=24;       
 
   while (bit--) {
@@ -105,9 +101,6 @@ static inline void __attribute__ ((always_inline)) sendGreenRow( uint8_t row ) {
 }
 
 static inline void __attribute__ ((always_inline)) sendRedRow( uint8_t row ) {
-
-  // Send the bit 24 times down every row. This is 100% white. Remember that each pixel is 24 bits wide (8 bits each for R,G, & B)
-  
   uint8_t bit=24;       
 
   while (bit--) {
@@ -117,9 +110,6 @@ static inline void __attribute__ ((always_inline)) sendRedRow( uint8_t row ) {
 }
 
 static inline void __attribute__ ((always_inline)) sendBlueRow( uint8_t row ) {
-
-  // Send the bit 24 times down every row. This is 100% white. Remember that each pixel is 24 bits wide (8 bits each for R,G, & B)
-  
   uint8_t bit=24;       
 
   while (bit--) {
@@ -127,152 +117,45 @@ static inline void __attribute__ ((always_inline)) sendBlueRow( uint8_t row ) {
       else sendBitX8(0b00000000) ;
   }
 }
-// Just wait long enough without sending any bits to cause the pixels to latch and display the last sent frame
 
+// Just wait long enough without sending any bits to cause the pixels to latch and display the last sent frame
 void show() {
   _delay_us( (RES / 1000UL) + 1);       // Round up since the delay must be _at_least_ this long (too short might not work, too long not a problem)
 }
 
+void clearAll(){
+  cli();                        // No time for interruptions!
+  for (int i=0; i<STRING_LENGTH; i++) sendWhiteRow(0b00000000);
+  sei();
+  show();
+}
 int loopCount = 0;
 bool blnIncrement = true;
 
-void setup() {
-    //Serial.begin(9600);
-  PIXEL_DDR = 0xff;    // Set all row pins to output
-  /*  pinMode(2, OUTPUT);
-    digitalWrite(2, LOW);
-    pinMode(3, OUTPUT);
-    digitalWrite(3, LOW);
-    pinMode(4, OUTPUT);
-    digitalWrite(4, LOW);
 
-    pinMode(8,INPUT);
-    pinMode(11,INPUT);
-    pinMode(12,INPUT);
-    Serial.println("setup complete");*/
-/*Serial.print(digitalRead(8));
-    Serial.print(" ");
-    Serial.print(digitalRead(11));
-    Serial.print(" ");
-    Serial.print(digitalRead(12));
-    Serial.println(" ");
-    delay(500);*/
-    cli();                        // No time for interruptions!
-  for (int i=0; i<40; i++) sendWhiteRow(0b00000000);
-  sei();
-  
+void setup() {
+  PIXEL_DDR = 0xff;    // Set all row pins to output
+  clearAll();
   delay(500);
 }
 
 
 void loop() {
-  //if (loopCount < 100) { Serial.println("start loop");loopCount++;}
-  //delay(5500);
   
   cli();
-  for (int i=0; i<40; i++){
+  for (int i=0; i<STRING_LENGTH; i++){
     if (i >= loopCount && i < loopCount + 3) sendRedRow(0b11111111);
     else sendRedRow(0b00000000);
   }
   sei();
+  show();
   
-  delay(50);
   if (blnIncrement) loopCount++;
   else loopCount--;
 
-  if (loopCount > 37 && blnIncrement) blnIncrement = false;
+  if (loopCount > STRING_LENGTH - 3 && blnIncrement) blnIncrement = false;
   else if (loopCount < 0 && !blnIncrement) blnIncrement = true;
   
-  /*sendBitX8( 0b00000000 );
-  sendBitX8( 0b00000000 );
-  sendBitX8( 0b00000000 );
-  sendBitX8( 0b00000000 );
-  sendBitX8( 0b11111111 );
-  sendBitX8( 0b11111111 );
-  sendBitX8( 0b11111111 );
-  sendBitX8( 0b11111111 );
-  sendBitX8( 0b00000000 );
-  sendBitX8( 0b00000000 );
-  sendBitX8( 0b00000000 );
-  sendBitX8( 0b00000000 );
-  sendBitX8( 0b11111111 );
-  sendBitX8( 0b11111111 );
-  sendBitX8( 0b11111111 );
-  sendBitX8( 0b11111111 );
-  sendBitX8( 0b00000000 );
-  sendBitX8( 0b00000000 );
-  sendBitX8( 0b00000000 );
-  sendBitX8( 0b00000000 );
-  sendBitX8( 0b11111111 );
-  sendBitX8( 0b11111111 );
-  sendBitX8( 0b11111111 );
-  sendBitX8( 0b11111111 );*/
+  delay(50);
   
-  //loopCount++;
-
- // delay(1000);      // Wait more than RESET timout to let latch into the LEDs
-
-  //cli();                        // No time for interruptions!
-  /*if (loopCount < 10){
-  sendPixelRow( 0b00000100 );   // Send an interesting and challenging pattern 
-  sendPixelRow( 0b00001100 );
-  sendPixelRow( 0b00010100 );
-  sendPixelRow( 0b00011100 );}
-  else{
-  sendPixelRow( 0b00000000 );
-  }*/
-  /*if (loopCount < 100) {
-    Serial.print(digitalRead(8));
-    Serial.print(" ");
-    Serial.print(digitalRead(11));
-    Serial.print(" ");
-    Serial.print(digitalRead(12));
-    Serial.println(" ");
-  }*/
-  /*sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-    sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-    sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-    sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-    sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-    sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );
-  sendPixelRow( 0b00000000 );*/
-  //sei();
-/*sei();
-  while(true){
-  delay(500);
-  }*/
-  //return;  
 }
