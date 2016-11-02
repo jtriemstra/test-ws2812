@@ -1,0 +1,12 @@
+C:\TestProjects\Tetris\SerialPortTest\bin\Debug\SerialPortTest.exe.config
+C:\TestProjects\Tetris\SerialPortTest\bin\Debug\SerialPortTest.exe
+C:\TestProjects\Tetris\SerialPortTest\bin\Debug\SerialPortTest.pdb
+C:\TestProjects\Tetris\SerialPortTest\obj\Debug\SerialPortTest.csprojResolveAssemblyReference.cache
+C:\TestProjects\Tetris\SerialPortTest\obj\Debug\SerialPortTest.exe
+C:\TestProjects\Tetris\SerialPortTest\obj\Debug\SerialPortTest.pdb
+C:\TestProjects\Arduino\test-ws2812\SerialPortTest\bin\Debug\SerialPortTest.exe.config
+C:\TestProjects\Arduino\test-ws2812\SerialPortTest\obj\Debug\SerialPortTest.exe
+C:\TestProjects\Arduino\test-ws2812\SerialPortTest\obj\Debug\SerialPortTest.pdb
+C:\TestProjects\Arduino\test-ws2812\SerialPortTest\bin\Debug\SerialPortTest.exe
+C:\TestProjects\Arduino\test-ws2812\SerialPortTest\bin\Debug\SerialPortTest.pdb
+C:\TestProjects\Arduino\test-ws2812\SerialPortTest\obj\Debug\SerialPortTest.csprojResolveAssemblyReference.cache

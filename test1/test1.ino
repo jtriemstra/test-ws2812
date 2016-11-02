@@ -11,6 +11,7 @@
 #define PIXEL_PORT  PORTD  // Port of the pin the pixels are connected to
 #define PIXEL_PORT2  PORTC  // Port of the pin the pixels are connected to
 #define PIXEL_DDR   DDRD   // Port of the pin the pixels are connected to
+#define PIXEL_DDR2   DDRC
 
 // These are the timing constraints taken mostly from the WS2812 datasheets 
 // These are chosen to be conservative and avoid problems rather than for maximum throughput 
@@ -131,31 +132,42 @@ void clearAll(){
 }
 int loopCount = 0;
 bool blnIncrement = true;
-
+bool blnRunning = false;
 
 void setup() {
   PIXEL_DDR = 0xff;    // Set all row pins to output
+  PIXEL_DDR2 = 0xff;    // Set all row pins to output
+  
   clearAll();
   delay(500);
+
+  Serial.begin(9600);
 }
 
 
 void loop() {
-  
-  cli();
-  for (int i=0; i<STRING_LENGTH; i++){
-    if (i >= loopCount && i < loopCount + 3) sendRedRow(0b11111111);
-    else sendRedRow(0b00000000);
+  int intCommand = -1;
+  if (Serial.available() > 0){
+    intCommand = Serial.read();
+    if (blnRunning && intCommand == 0) blnRunning = false;
+    if (!blnRunning && intCommand == 1) blnRunning = true;
   }
-  sei();
-  show();
-  
-  if (blnIncrement) loopCount++;
-  else loopCount--;
 
-  if (loopCount > STRING_LENGTH - 3 && blnIncrement) blnIncrement = false;
-  else if (loopCount < 0 && !blnIncrement) blnIncrement = true;
+  if (blnRunning){
+    cli();
+    for (int i=0; i<STRING_LENGTH; i++){
+      if (i >= loopCount && i < loopCount + 3) sendRedRow(0b11111111);
+      else sendRedRow(0b00000000);
+    }
+    sei();
+    show();
+    
+    if (blnIncrement) loopCount++;
+    else loopCount--;
   
+    if (loopCount > STRING_LENGTH - 3 && blnIncrement) blnIncrement = false;
+    else if (loopCount < 0 && !blnIncrement) blnIncrement = true;
+  }
   delay(50);
   
 }
