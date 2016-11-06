@@ -1,0 +1,6 @@
+C:\TestProjects\Arduino\test-ws2812\SerialPortTest2\bin\Debug\SerialPortTest2.exe.config
+C:\TestProjects\Arduino\test-ws2812\SerialPortTest2\bin\Debug\SerialPortTest2.exe
+C:\TestProjects\Arduino\test-ws2812\SerialPortTest2\bin\Debug\SerialPortTest2.pdb
+C:\TestProjects\Arduino\test-ws2812\SerialPortTest2\obj\Debug\SerialPortTest2.csprojResolveAssemblyReference.cache
+C:\TestProjects\Arduino\test-ws2812\SerialPortTest2\obj\Debug\SerialPortTest2.exe
+C:\TestProjects\Arduino\test-ws2812\SerialPortTest2\obj\Debug\SerialPortTest2.pdb
