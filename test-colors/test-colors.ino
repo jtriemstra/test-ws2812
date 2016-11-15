@@ -9,9 +9,9 @@
 // Note that you could also include the DigitalWriteFast header file to not need to to this lookup.
 
 #define PIXEL_PORT  PORTD  // Port of the pin the pixels are connected to
-#define PIXEL_PORT2  PORTC  // Port of the pin the pixels are connected to
+#define PIXEL_PORT2  PORTB  // Port of the pin the pixels are connected to
 #define PIXEL_DDR   DDRD   // Port of the pin the pixels are connected to
-#define PIXEL_DDR2   DDRC
+#define PIXEL_DDR2   DDRB
 
 // These are the timing constraints taken mostly from the WS2812 datasheets 
 // These are chosen to be conservative and avoid problems rather than for maximum throughput 
@@ -129,8 +129,23 @@ static inline void __attribute__ ((always_inline)) sendColorRow( uint8_t row, ui
   }
   else
   {
+    unsigned int bitMask = 128;
     for (int i=0; i<8; i++){
-      
+      if (green & bitMask) sendBitX8(row);
+      else sendBitX8(0b00000000);
+      bitMask = bitMask >> 1;
+    }
+    bitMask = 128;
+    for (int i=0; i<8; i++){
+      if (red & bitMask) sendBitX8(row);
+      else sendBitX8(0b00000000);
+      bitMask = bitMask >> 1;
+    }
+    bitMask = 128;
+    for (int i=0; i<8; i++){
+      if (blue & bitMask) sendBitX8(row);
+      else sendBitX8(0b00000000);
+      bitMask = bitMask >> 1;
     }
   }
   
@@ -164,8 +179,12 @@ void setup() {
 
 
 void loop() {
-  sendRedRow(0b11111111);
-  sendBlueRow(0b11111111);
-  sendGreenRow(0b11111111);
+  
+  sendColorRow(255,63,0,0);
+  sendColorRow(255, 0, 0, 63);
+  sendColorRow(255,0,63,0);
+  sendColorRow(255,63,63,0);
+  sendColorRow(255,0,63,63);
+  sendColorRow(255,63,0,63);
   while(true);
 }

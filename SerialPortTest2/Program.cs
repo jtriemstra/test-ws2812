@@ -36,7 +36,27 @@ namespace SerialPortTest2
                 if (loopCount > STRING_LENGTH - 3 && blnIncrement) blnIncrement = false;
                 else if (loopCount < 0 && !blnIncrement) blnIncrement = true;
 
-                System.Threading.Thread.Sleep(100);
+                System.Threading.Thread.Sleep(200);
+
+                if (loopCount == 20)
+                {
+                    for (int j = 0; j < 20; j++)
+                    {
+                        for (int i = 0; i < STRING_LENGTH; i++)
+                        {
+                            if (i >= loopCount && i < loopCount + 3) mySerialPort.Write(new byte[] { 255 }, 0, 1);
+                            else mySerialPort.Write(new byte[] { 0 }, 0, 1);
+                        }
+
+                        System.Threading.Thread.Sleep(50);
+
+                        for (int i = 0; i < STRING_LENGTH; i++)
+                        {
+                            mySerialPort.Write(new byte[] { 0 }, 0, 1);
+                        }
+                        System.Threading.Thread.Sleep(50);
+                    }
+                }
             }
         }
     }

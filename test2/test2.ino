@@ -40,7 +40,7 @@ const int STRING_LENGTH = 40;
 // We must to drop to asm to enusre that the complier does
 // not reorder things and make it so the delay happens in the wrong place.
 
-static inline __attribute__ ((always_inline)) void sendBitX8( uint8_t bits ) {
+static inline __attribute__ ((always_inline)) void sendBitX8( uint8_t bits, uint8_t bits2 ) {
 
     const uint8_t onBits = 0xff;          // We need to send all bits on on all pins as the first 1/3 of the encoded bits
             
@@ -54,7 +54,7 @@ static inline __attribute__ ((always_inline)) void sendBitX8( uint8_t bits ) {
       ".endr \n\t"
       
       "out %[port1], %[bits] \n\t"             // set the output bits to thier values for T0H-T1H
-      "out %[port2], %[bits] \n\t"
+      "out %[port2], %[bits2] \n\t"
       ".rept %[dataCycles] \n\t"               // Execute NOPs to delay exactly the specified number of cycles
       "nop \n\t"
       ".endr \n\t"
@@ -68,6 +68,7 @@ static inline __attribute__ ((always_inline)) void sendBitX8( uint8_t bits ) {
       [port1]    "I" (_SFR_IO_ADDR(PIXEL_PORT)),
       [port2]    "I" (_SFR_IO_ADDR(PIXEL_PORT2)),
       [bits]   "d" (bits),
+      [bits2]   "d" (bits2),
       [onBits]   "d" (onBits),
       
       [T0HCycles]  "I" (NS_TO_CYCLES(T0H) - 3),           // 1-bit width less overhead  for the actual bit setting, note that this delay could be longer and everything would still work
@@ -88,7 +89,7 @@ static inline void __attribute__ ((always_inline)) sendWhiteRow( uint8_t row ) {
   uint8_t bit=24;       
 
   while (bit--) {
-      sendBitX8( row );
+      sendBitX8( row, row );
   }
 }
     
@@ -96,7 +97,7 @@ static inline void __attribute__ ((always_inline)) sendGreenRow( uint8_t row ) {
   uint8_t bit=24;       
 
   while (bit--) {
-      if (bit > 16) sendBitX8( row );
+      if (bit > 16) sendBitX8( row, row );
       else sendBitX8(0b00000000) ;
   }
 }
@@ -105,7 +106,7 @@ static inline void __attribute__ ((always_inline)) sendRedRow( uint8_t row ) {
   uint8_t bit=24;       
 
   while (bit--) {
-      if (bit <= 16 && bit > 8) sendBitX8( row );
+      if (bit <= 16 && bit > 8) sendBitX8( row, row );
       else sendBitX8(0b00000000) ;
   }
 }
@@ -114,7 +115,7 @@ static inline void __attribute__ ((always_inline)) sendBlueRow( uint8_t row ) {
   uint8_t bit=24;       
 
   while (bit--) {
-      if (bit <= 8) sendBitX8( row );
+      if (bit <= 8) sendBitX8( row, row );
       else sendBitX8(0b00000000) ;
   }
 }

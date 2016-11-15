@@ -9,9 +9,9 @@
 // Note that you could also include the DigitalWriteFast header file to not need to to this lookup.
 
 #define PIXEL_PORT  PORTD  // Port of the pin the pixels are connected to
-#define PIXEL_PORT2  PORTC  // Port of the pin the pixels are connected to
+#define PIXEL_PORT2  PORTB  // Port of the pin the pixels are connected to
 #define PIXEL_DDR   DDRD   // Port of the pin the pixels are connected to
-#define PIXEL_DDR2   DDRC
+#define PIXEL_DDR2   DDRB
 
 // These are the timing constraints taken mostly from the WS2812 datasheets 
 // These are chosen to be conservative and avoid problems rather than for maximum throughput 
