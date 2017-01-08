@@ -96,6 +96,15 @@ static inline void __attribute__ ((always_inline)) sendWhiteRow( uint8_t row ) {
       sendBitX8( row, row );
   }
 }
+
+static inline void __attribute__ ((always_inline)) sendRedRow( uint8_t row ) {
+  uint8_t bit=24;       
+
+  while (bit--) {
+      if (bit <= 16 && bit > 8) sendBitX8( row, row );
+      else sendBitX8(0b00000000, 0b00000000) ;
+  }
+}
     
 // Just wait long enough without sending any bits to cause the pixels to latch and display the last sent frame
 void show() {
@@ -244,6 +253,11 @@ void setup() {
   
   clearAll();
   
+  delay(500);
+  
+  sendRedRow(255);
+  delay(500);
+  clearAll();
   delay(500);
 }
 
