@@ -36,9 +36,5 @@ class Grid{
       }
     }
 
-    GridPoint getPoints () const
-    {
-      return m_objStaticPoints;
-    }
 };
 
