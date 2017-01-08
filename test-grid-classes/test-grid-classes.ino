@@ -215,27 +215,11 @@ Game* m_objGame;
 int m_intLoopCount = 0;
 bool m_blnAscending = true;
 
-void setup() {
-  // put your setup code here, to run once:
-  PIXEL_DDR = 0xff;    // Set all row pins to output
-  PIXEL_DDR2 = 0xff;    // Set all row pins to output
-
-  m_intLoopCount = 0;
-  m_objGame = new Game();
-  m_objGame->initialize(1);
-  
-  clearAll();
-  
-  delay(500);
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
+void doRefreshDisplay(GridPoint objCurrentDisplay)
+{
   byte bytDecodedColorSplits[2 * 24 * TETRIS_LENGTH];
   uint8_t uncompressedColors[TETRIS_WIDTH];
 
-  m_objGame->highlightOneRow(m_intLoopCount, 1, 2);
-  
   for (int i=0; i<TETRIS_LENGTH; i++)
   {
     for (int j=0; j<(TETRIS_WIDTH); j++)
@@ -247,6 +231,27 @@ void loop() {
   }
   
   showTetris(bytDecodedColorSplits);
+}
+
+void setup() {
+  // put your setup code here, to run once:
+  PIXEL_DDR = 0xff;    // Set all row pins to output
+  PIXEL_DDR2 = 0xff;    // Set all row pins to output
+
+  m_intLoopCount = 0;
+  m_objGame = new Game(doRefreshDisplay);
+  m_objGame->initialize(1);
+  
+  clearAll();
+  
+  delay(500);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  m_objGame->highlightOneRow(m_intLoopCount, 1, 2);
+
+  doRefreshDisplay(m_objGame->CurrentDisplay());
 
   delay(200);
 

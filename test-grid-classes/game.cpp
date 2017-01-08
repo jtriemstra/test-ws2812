@@ -1,9 +1,18 @@
 #include "grid.cpp"
 
 class Game {
-  Grid m_objGrid;
+  private:
+        Grid m_objGrid;
+        void (*m_fnRefreshDisplay)(GridPoint);
+        //GridEnums::Command (*m_fnReceiveInput)();
 
   public:
+        Game(void (*fnRefreshDisplay)(GridPoint)/*, GridEnums::Command(*fnReceiveInput)()*/)
+        {
+            m_fnRefreshDisplay = fnRefreshDisplay;
+            //m_fnReceiveInput = fnReceiveInput;
+        }
+        
         GridPoint CurrentDisplay() const
         {
           GridPoint objReturn = m_objGrid.StaticPoints();
