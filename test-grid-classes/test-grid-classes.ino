@@ -1,4 +1,5 @@
-#include "grid.cpp"
+#include "game.cpp"
+
 // Credit: https://wp.josh.com/2014/05/13/ws2812-neopixels-are-not-so-finicky-once-you-get-to-know-them/
 // These values depend on which pins your 8 strings are connected to and what board you are using 
 // More info on how to find these at http://www.arduino.cc/en/Reference/PortManipulation
@@ -117,15 +118,15 @@ void decodeTetrisColor(uint8_t color, uint8_t &red, uint8_t &green, uint8_t &blu
      case 2:
       red = 0;       green = 8;      blue = 0;      break;
      case 3:
-      red = 0;      green = 0;      blue = 15;      break;
+      red = 0;      green = 0;      blue = 8;      break;
      case 4:
-      red = 15;      green = 15;      blue = 0;      break;
+      red = 8;      green = 8;      blue = 0;      break;
      case 5:
-      red = 15;      green = 0;      blue = 15;      break;
+      red = 8;      green = 0;      blue = 8;      break;
      case 6:
-      red = 0;      green = 15;      blue = 15;      break;
+      red = 0;      green = 8;      blue = 8;      break;
      case 7:
-      red = 15;      green = 15;      blue = 15;      break;
+      red = 8;      green = 8;      blue = 8;      break;
   }
 }
 
@@ -209,7 +210,8 @@ void showTetris(byte output[]){
   show();
 }
 
-Grid* m_objGrid = new Grid();
+//Grid* m_objGrid = new Grid();
+Game* m_objGame;
 int m_intLoopCount = 0;
 bool m_blnAscending = true;
 
@@ -219,7 +221,8 @@ void setup() {
   PIXEL_DDR2 = 0xff;    // Set all row pins to output
 
   m_intLoopCount = 0;
-  m_objGrid->initialize(1);
+  m_objGame = new Game();
+  m_objGame->initialize(1);
   
   clearAll();
   
@@ -231,13 +234,13 @@ void loop() {
   byte bytDecodedColorSplits[2 * 24 * TETRIS_LENGTH];
   uint8_t uncompressedColors[TETRIS_WIDTH];
 
-  m_objGrid->highlightOneRow(m_intLoopCount, 1, 2);
+  m_objGame->highlightOneRow(m_intLoopCount, 1, 2);
   
   for (int i=0; i<TETRIS_LENGTH; i++)
   {
     for (int j=0; j<(TETRIS_WIDTH); j++)
     {
-      uncompressedColors[j] = m_objGrid->getPoints().Points[j][i];
+      uncompressedColors[j] = m_objGame->CurrentDisplay().Points[j][i];
     }
 
     makeTetrisRow(uncompressedColors, bytDecodedColorSplits, i); 
