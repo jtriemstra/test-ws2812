@@ -13,6 +13,11 @@ class Grid{
     }
 
     GridPoint StaticPoints() const {  return m_objStaticPoints; } 
+
+    int StaticPoint(int intColumn, int intRow)
+    {
+      return m_objStaticPoints[intColumn][intRow];
+    }
     
     void initialize(int intStartColor)
     {

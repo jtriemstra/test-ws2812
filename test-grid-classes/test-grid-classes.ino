@@ -274,7 +274,7 @@ void loop() {
   {
     for (int j=0; j<(TETRIS_WIDTH); j++)
     {
-      uncompressedColors[j] = m_objGame->CurrentDisplay().Points[j][i];
+      uncompressedColors[j] = m_objGame->CurrentDisplay(j,i);
     }
 
     makeTetrisRow(uncompressedColors, bytDecodedColorSplits, i); 

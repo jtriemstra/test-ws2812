@@ -17,6 +17,11 @@ class Game {
           return objReturn;
         }
 
+        int CurrentDisplay(int intColumn, int intRow)
+        {
+          return m_objGrid.StaticPoint(intColumn, intRow);
+        }
+
         void initialize(int intColor)
         {
           m_objGrid.initialize(intColor);
