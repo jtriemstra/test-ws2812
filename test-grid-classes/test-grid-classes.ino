@@ -96,6 +96,16 @@ static inline void __attribute__ ((always_inline)) sendWhiteRow( uint8_t row ) {
       sendBitX8( row, row );
   }
 }
+
+static inline void __attribute__ ((always_inline)) sendRedRow( uint8_t row ) {
+ uint8_t bit=24;       
+
+ while (bit--) {
+     if (bit <= 16 && bit > 8) sendBitX8( row, row );
+     else sendBitX8(0b00000000, 0b00000000) ;
+ }
+}       
+
     
 // Just wait long enough without sending any bits to cause the pixels to latch and display the last sent frame
 void show() {
@@ -215,17 +225,41 @@ Game* m_objGame;
 int m_intLoopCount = 0;
 bool m_blnAscending = true;
 
+void doRefreshDisplay()
+{
+ byte bytDecodedColorSplits[2 * 24 * TETRIS_LENGTH];
+ uint8_t uncompressedColors[TETRIS_WIDTH];
+
+ for (int i=0; i<TETRIS_LENGTH; i++)
+ {
+   for (int j=0; j<(TETRIS_WIDTH); j++)
+   {
+     uncompressedColors[j] = m_objGame->CurrentDisplay().Points[j][i];
+   }
+
+   makeTetrisRow(uncompressedColors, bytDecodedColorSplits, i); 
+ }
+ 
+ showTetris(bytDecodedColorSplits);
+}
+
+
 void setup() {
   // put your setup code here, to run once:
   PIXEL_DDR = 0xff;    // Set all row pins to output
   PIXEL_DDR2 = 0xff;    // Set all row pins to output
 
   m_intLoopCount = 0;
-  m_objGame = new Game();
+  m_objGame = new Game(doRefreshDisplay);
   m_objGame->initialize(1);
   
   clearAll();
   
+  delay(500);
+
+  sendRedRow(255);
+  delay(500);
+  clearAll();
   delay(500);
 }
 
