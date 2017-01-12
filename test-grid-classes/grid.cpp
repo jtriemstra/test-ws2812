@@ -5,11 +5,10 @@ class Grid{
   static const int TETRIS_WIDTH = 10;
   
   GridPoint m_objStaticPoints;
-  void (*m_fnRefreshDisplay)();
 
   public:
-    Grid(void (*fnRefreshDisplay)()){
-      m_fnRefreshDisplay = fnRefreshDisplay;
+    Grid(){
+      
     }
 
     GridPoint StaticPoints() const {  return m_objStaticPoints; } 
