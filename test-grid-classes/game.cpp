@@ -2,8 +2,12 @@
 
 class Game {
   Grid m_objGrid;
+  void (*m_fnRefreshDisplay)();
 
   public:
+        Game(void (*fnRefreshDisplay)()){
+          m_fnRefreshDisplay = fnRefreshDisplay;
+        }
         GridPoint CurrentDisplay() const
         {
           GridPoint objReturn = m_objGrid.StaticPoints();
